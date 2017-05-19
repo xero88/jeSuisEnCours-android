@@ -43,15 +43,11 @@ public class CourseService {
         ValueEventListener postListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                
-                //// TODO: 19.05.17  
-                /*Course course = dataSnapshot.getValue(Course.class);
-
-                Log.e(TAG, "onDataChange: " + course.getName());
-                Log.e(TAG, "onDataChange: " + course.getStatus());*/
-
-                //callback.getCurrentCourse(course, currentDate);
+                Course course = dataSnapshot.getValue(Course.class);
+                if(course != null) {
+                    course.setId(dataSnapshot.getKey());
+                    callback.getCurrentCourse(course, currentDate);
+                }
             }
 
             @Override

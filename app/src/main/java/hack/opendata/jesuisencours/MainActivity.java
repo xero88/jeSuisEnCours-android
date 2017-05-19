@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
@@ -51,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
 
         courseNameTxt = (TextView) findViewById(R.id.courseName);
         acceptButton = (Button) findViewById(R.id.acceptButton);
-        discoverButton = (Button) findViewById(R.id.discover);
 
         final CourseService courseService = new CourseService();
         courseService.getCurrentCourse(this);
@@ -59,17 +59,7 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            }
-        });
 
-
-        discoverButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                /**
-                 * BLUETOOTH DEJA
-                 */
                 Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
 
                 if (pairedDevices.size() > 0) {
@@ -78,21 +68,14 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
                         String deviceName = device.getName();
                         String deviceHardwareAddress = device.getAddress(); // MAC address
 
-                        Log.e(TAG, "DEVICE : " + deviceName + " " + deviceHardwareAddress);
-
+                        Log.e(TAG, "Device : " + deviceName + " " + deviceHardwareAddress);
 
                         if(deviceName != null && deviceName.equals("yo it is me")){ // Todo harcoded
                             Log.e(TAG, "Try to connect...");
-
                             new ConnectThread(device).start();
                         }
-
                     }
                 }
-                /**
-                 *
-                 */
-
 
                 // Register for broadcasts when a device is discovered.
                 IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -100,32 +83,19 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
 
                 mBluetoothAdapter.cancelDiscovery();
                 mBluetoothAdapter.startDiscovery();
-
             }
         });
 
+
         if (mBluetoothAdapter != null) {
-            // Device does not support
-
-
             if (!mBluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             }
 
-            // Establish connection to the proxy.
-            //mBluetoothAdapter.getProfileProxy(this, mProfileListener, BluetoothProfile.HEADSET);
-
-
         } else {
             Log.e(TAG, "Bluetooth not available !");
-
-
         }
-
-        // Close proxy connection after use.
-        //mBluetoothAdapter.closeProfileProxy(mBluetoothHeadset);
-
 
     }
 
@@ -134,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
     // Get the default adapter
     BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-    private BluetoothProfile.ServiceListener mProfileListener = new BluetoothProfile.ServiceListener() {
+    /*private BluetoothProfile.ServiceListener mProfileListener = new BluetoothProfile.ServiceListener() {
         public void onServiceConnected(int profile, BluetoothProfile proxy) {
             if (profile == BluetoothProfile.HEADSET) {
                 mBluetoothHeadset = (BluetoothHeadset) proxy;
@@ -148,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
                 Log.e(TAG, "onServiceDisconnected:");
             }
         }
-    };
+    };*/
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
@@ -156,8 +126,6 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
 
         if (requestCode == this.REQUEST_ENABLE_BT) {
             Log.e(TAG, "Bluethooth enabled");
-
-
         }
     }
 
@@ -171,8 +139,6 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String deviceName = device.getName();
                 String deviceHardwareAddress = device.getAddress(); // MAC address
-
-                //new ConnectThread(device);
 
                 Log.e(TAG, "onReceive: DEVICE DISCOVERED " + deviceName + " " + deviceHardwareAddress);
             }
@@ -194,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
         this.course = course;
         this.date = date;
 
-        if (course != null && !course.getName().equals(""))
+        if (course != null && course.getName() != null && !course.getName().equals(""))
             courseNameTxt.setText(course.getName());
 
         acceptButton.setVisibility(View.VISIBLE);
@@ -203,7 +169,9 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
     @Override
     public void courseValidated() {
         acceptButton.setText("Bon cours !");
-        acceptButton.setBackgroundColor(getColor(R.color.colorGreen));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            acceptButton.setBackgroundColor(getColor(R.color.colorGreen));
+        }
         acceptButton.setEnabled(false);
     }
 
@@ -265,9 +233,9 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
     }
 
     private void manageMyConnectedSocket(BluetoothSocket mmSocket) {
-        Log.e(TAG, "COnnected !");
+        Log.e(TAG, "Connected !");
 
-        String message = JSECApp.currentUserId;
+        String message = JSECApp.currentUserId + "/" + course.getId() + "/" + course.getName() ;
         byte[] send = message.getBytes();
         thread = new ConnectedThread(mmSocket);
         thread.write(send);
@@ -279,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
         @Override
         public void handleMessage(Message msg) {
             Log.e(TAG, "handleMessage: " + msg.toString());
+            courseValidated();
         }
     };
 
