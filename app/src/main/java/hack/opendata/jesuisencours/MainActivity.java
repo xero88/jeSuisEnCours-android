@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +19,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.FirebaseApp;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
     private String date;
     private Button discoverButton;
     private ConnectedThread thread;
+    private ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
 
         courseNameTxt = (TextView) findViewById(R.id.courseName);
         acceptButton = (Button) findViewById(R.id.acceptButton);
+        image = (ImageView) findViewById(R.id.imageValidation);
+
 
         final CourseService courseService = new CourseService();
         courseService.getCurrentCourse(this);
@@ -168,11 +174,10 @@ public class MainActivity extends AppCompatActivity implements CourseService.Cur
 
     @Override
     public void courseValidated() {
-        acceptButton.setText("Bon cours !");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            acceptButton.setBackgroundColor(getColor(R.color.colorGreen));
-        }
+        acceptButton.setVisibility(View.INVISIBLE);
         acceptButton.setEnabled(false);
+        image.setImageDrawable(getDrawable(R.drawable.success));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#32BA7C")));
     }
 
     private class ConnectThread extends Thread {
