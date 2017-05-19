@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "707752197589",
+    "firebase_url": "https://jesuisencours-63b19.firebaseio.com",
+    "project_id": "jesuisencours-63b19",
+    "storage_bucket": "jesuisencours-63b19.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707752197589:android:15aedaca5a638fd2",
+        "android_client_info": {
+          "package_name": "hack.opendata.jesuisencours"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707752197589-cnvv97r5qfkr1k666ek7nh7o8nshlurf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "hack.opendata.jesuisencours",
+            "certificate_hash": "b4952b2e35b3f4dcfe1d795d6068a23336c96728"
+          }
+        },
+        {
+          "client_id": "707752197589-7d65fvcsvbfc990o1bk49mnt0l9jhhnn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOZA71hC6CopHKjCs1j5ZmucUfQXNDMzc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707752197589-7d65fvcsvbfc990o1bk49mnt0l9jhhnn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
